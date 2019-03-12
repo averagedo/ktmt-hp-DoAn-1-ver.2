@@ -1,0 +1,3 @@
+﻿  main.cpp
+c:\users\admin\documents\github\ktmt-hp-doan-1-ver.2\doan-ktmt\1712843\main.cpp(4): warning C4326: return type of 'main' should be 'int' instead of 'void'
+  1712843.vcxproj -> C:\Users\Admin\Documents\GitHub\ktmt-hp-DoAn-1-ver.2\DoAn-KTMT\Debug\1712843.exe
