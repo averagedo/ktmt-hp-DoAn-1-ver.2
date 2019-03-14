@@ -2,7 +2,7 @@
 
 void main()
 {
-	QInt I;
+	QInt I, E, V;
 	/*string a,b;
 	for (int i = 0; i < 128; i++)
 	{
@@ -24,7 +24,23 @@ void main()
 	string c = I.CongBit(a, b);
 	cout << c << endl;*/
 
-	string a = "16864913";
-	cout << I.NhanHai(a) << endl;
+	/*string a = "1000645";
+	string b = "5161";
+	I.ScanQInt(a, 10);
+	E.ScanQInt(b, 10);
+	V = I - E;
+	cout << V.PrinQInt(10) << endl;*/
+
+	/*string a = "512";
+	string b = "6";
+	cout << I.CongHaiString(a, b) << endl;*/
+
+	string a = "70";
+	string b = "3";
+	I.ScanQInt(a, 10);
+	E.ScanQInt(b, 10);
+	V = I * E;
+	cout << V.PrinQInt(10) << endl;
+
 	system("pause");
 }

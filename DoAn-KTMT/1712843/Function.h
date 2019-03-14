@@ -22,11 +22,21 @@ public:
 	string DecToBin(string a);
 
 	string NhanHai(string a);
-	string MuHai(int n);
+	string HaiMu(int n);
+	string CongHaiString(string a, string b);	//khong cung kich thuoc
 	string BinToDec(string a);
+
+	string BinToHex(string a);
+
+	string HvsB(char a);
+	string HexToBin(string a);
 
 	string CongBit(string BitA, string BitB); //ca hai deu co 128 bit;
 
+	QInt operator+(QInt a);
+	QInt operator-(QInt a);
+	QInt operator*(QInt a);
+	
 	//Nhap Xuat
 	
 };

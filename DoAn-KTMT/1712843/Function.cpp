@@ -12,9 +12,7 @@ string QInt::getQInt()	//chi dung voi binary
 	for (int i = 0; i < 4; i++)
 	{
 		for (int j = i * 32; j < (i + 1) * 32; j++)
-		{
 			a.push_back(char(((qInt[i] >> (((i + 1) * 32 - 1) - j)) & 1) + 48));
-		}
 	}
 	return a;
 }
@@ -22,9 +20,7 @@ string QInt::getQInt()	//chi dung voi binary
 void QInt::setQInt(string a)	//chi dung voi binary
 {
 	for (int i = 0; i < 4; i++)	//Ghi lai gia tri khoi tao
-	{
 		qInt[i] = 0;
-	}
 	for (int i = 0; i < a.length(); i++)
 	{
 		if (i > 127)//chuoi a khong qua 128 phan tu
@@ -37,9 +33,7 @@ void QInt::setQInt(string a)	//chi dung voi binary
 			for (int j = i * 32; j < (i + 1) * 32; j++)
 			{
 				if (int(a[j] - 48) == 1)
-				{
 					qInt[i] = (1 << ((i + 1) * 32 - 1 - j)) | qInt[i];
-				}
 			}
 		}
 	}
@@ -48,9 +42,7 @@ void QInt::setQInt(string a)	//chi dung voi binary
 void QInt::XuatStrBit(string a)
 {
 	for (int i = 0; i < a.length(); i++)
-	{
 		cout << a[i] << " ";
-	}
 	cout << endl;
 }
 
@@ -88,10 +80,8 @@ string QInt::PrinQInt(int n)
 		return getQInt();
 	if (n == 10)
 	{
-		string b = getQInt();
-		if (b[0] == '1');
+		return BinToDec(getQInt());
 	}
-	
 }
 
 string QInt::ChiaHai(string a)
@@ -146,22 +136,123 @@ string QInt::NhanHai(string a)
 	for (int i = a.length() - 1; i >=0; i--)
 	{
 		b[i + 1] =b[i + 1] + (int(a[i] - 48) * 2);
-		if (b[i + 1] >= 10 && i - 1 >= 0)
+		if (b[i + 1] >= 10 && i >= 0)
 		{
 			b[i] = 1;
 			b[i + 1] = b[i + 1] % 10;
 		}
 		KQ.insert(0, 1, char(b[i + 1]) + 48);
 	}
+	KQ.insert(0, 1, char(b[0]) + 48);
 	if (KQ[0] == '0')
 		KQ.erase(KQ.begin());
 	delete[] b;
 	return KQ;
 }
 
+string QInt::HaiMu(int n)
+{
+	string a="1";
+	if (n == 0)
+		return a;
+	for (int i = 0; i < n; i++)
+		a = NhanHai(a);
+	return a;
+}
+
+string QInt::CongHaiString(string a, string b)
+{
+	if (a.length() < b.length())
+		a.swap(b);
+	int size = a.length() - b.length();
+	for (int i = 0; i < size; i++)
+		b.insert(0, 1, '0');
+	for (int i = a.length() - 1; i >= 0; i--)
+	{
+		a[i] = char(int((int)(a[i] - 48) + (int)(b[i] - 48)) + 48);
+		if (a[i] > 57)
+		{
+			a[i] = a[i] - 10;
+			if (i - 1 < 0)
+				a.insert(0, 1, '1');
+			else
+				a[i - 1]++;
+		}
+	}
+	return a;
+}
+
 string QInt::BinToDec(string a)
 {
-	return string();
+	string KQ = "0";
+	int am = 0;
+	if (a[0] == '1')
+	{
+		am = 1;
+		a = BuHai(a);
+	}
+	for (int i = 127; i >= 0; i--)
+	{
+		if (a[i] == '1')
+			KQ = CongHaiString(KQ, HaiMu(127 - i));
+	}
+	if (am == 1)
+		KQ.insert(0, 1, '-');
+	return KQ;
+}
+
+string QInt::BinToHex(string a)
+{
+	string b = "0", KQ;
+	int j = 0;
+	for (int i = 127; i >=0; i--)
+	{
+		if (a[i] == '1')
+			b = CongHaiString(b, HaiMu(j));
+		j++;
+		if (j == 4)
+		{
+			if (b.length() == 2)
+				KQ.insert(0, 1, (b[1] + 17));
+			else
+				KQ.insert(0, b);
+			j = 0;
+			b = "0";
+		}
+	}
+	return KQ;
+}
+
+string QInt::HvsB(char a)
+{
+	string KQ;
+	if ((int)a > 57)
+	{
+		KQ.push_back(a - 17);
+		KQ.insert(0, 1, '1');
+	}
+	else
+		KQ.insert(0, 1, a);
+	return KQ;
+}
+
+string QInt::HexToBin(string a)
+{
+	string b, c, KQ;
+	for (int i = 0; i < 32; i++)
+	{
+		b = HvsB(a[i]);
+		for (int j = 0; b != ""; j++)
+		{
+			c.insert(0, 1, (b[b.length() - 1] % 2 == 0) ? '0' : '1');
+			b = ChiaHai(b);
+		}
+		for (int j = 0; c.length() < 4; j++)
+			c.insert(0, 1, '0');
+		KQ = KQ + c;
+		c.clear();
+	}
+	return KQ;
 }
 
 string QInt::CongBit(string BitA, string BitB)
@@ -172,9 +263,7 @@ string QInt::CongBit(string BitA, string BitB)
 	{
 		tong = int(BitA[i] - 48) + int(BitB[i] - 48);
 		if (tong < 2)
-		{
 			KQ.insert(0, 1, char(tong + 48));
-		}
 		else {
 			if (tong == 2)
 				KQ.insert(0, 1, '0');
@@ -185,6 +274,58 @@ string QInt::CongBit(string BitA, string BitB)
 		}
 	}
 	return KQ;
+}
+
+QInt QInt::operator+(QInt a)
+{
+	string str1 = this->getQInt();
+	string str2 = a.getQInt();
+	a.setQInt(CongBit(str1, str2));
+	return a;
+}
+
+QInt QInt::operator-(QInt a)
+{
+	string str = a.getQInt();
+	str = BuHai(str);
+	a.setQInt(str);
+	return a + *this;
+}
+
+QInt QInt::operator*(QInt a)
+{
+	string M = this->getQInt();
+	string Q = a.getQInt();
+	string Q0 = "0", A;
+	int n, j = 0;
+	while (M[j] != '1' && Q[j] != '1')
+		j++;
+	n = 128 - j + 1;	//So bit su dung
+	for (int i = 0; i < 128; i++)
+		A.push_back('0');
+	for (int i = 0; i < n; i++)
+	{
+		if (Q[127] == '1' && Q0[0] == '0')
+			A = CongBit(A, BuHai(M));
+		if (Q[127] == '0' && Q0[0] == '1')
+			A = CongBit(A, M);
+		//shift right
+		Q0[0] = Q[127];
+		Q.erase(Q.end()-1);
+		Q.insert(128 - n, 1, A[127]);
+		A.erase(A.end()-1);
+		if (A[128 - n] == '0')
+			A.insert(128 - n, 1, '0');
+		else
+			A.insert(128 - n, 1, '1');
+		if (A[128 - n - 1] == '1')
+			A[128 - n - 1] = '0';
+	}
+	string KQ;
+	KQ = KQ + Q;
+	KQ.replace(128 - 2 * n, n, A, 128 - n, n);
+	a.setQInt(KQ);
+	return a;
 }
 
 
