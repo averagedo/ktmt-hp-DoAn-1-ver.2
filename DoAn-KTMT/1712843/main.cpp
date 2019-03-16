@@ -35,11 +35,19 @@ void main()
 	string b = "6";
 	cout << I.CongHaiString(a, b) << endl;*/
 
-	string a = "129";
+	/*string a = "129";
 	string b = "-3";
 	I.ScanQInt(a, 10);
 	E.ScanQInt(b, 10);
 	V = I / E;
-	cout << V.PrinQInt(10) << endl;
+	cout << V.PrinQInt(10) << endl;*/
+
+	QFloat Z, X, C;
+	string a = "0.0";
+	string b;
+	b= Z.DecToBin(a);
+	cout << Z.BinToDec(b) << endl;
+	//cout << Z.SoPhay(a) << endl;
+	
 	system("pause");
 }

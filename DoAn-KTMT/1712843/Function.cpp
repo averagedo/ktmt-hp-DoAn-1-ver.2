@@ -23,11 +23,6 @@ void QInt::setQInt(string a)	//chi dung voi binary
 		qInt[i] = 0;
 	for (int i = 0; i < a.length(); i++)
 	{
-		if (i > 127)//chuoi a khong qua 128 phan tu
-		{
-			cout << "Tran so" << endl;
-			exit(1);
-		}
 		for (int i = 0; i < 4; i++)
 		{
 			for (int j = i * 32; j < (i + 1) * 32; j++)
@@ -46,12 +41,13 @@ void QInt::XuatStrBit(string a)
 	cout << endl;
 }
 
-string QInt::BuHai(string a)
+string BuHai(string a)
 {
+	QInt I;
 	for (int i = 0; i < 128; i++)
 		a[i] = (a[i] == '0') ? '1' : '0';
 	string b = "1";
-	b = DecToBin(b);
+	b = I.DecToBin(b);
 	return CongBit(a,b);
 }
 
@@ -67,10 +63,7 @@ void QInt::ScanQInt(string a, int n)
 		setQInt(a);
 	}
 	if (n == 10)
-	{
-		a = DecToBin(a);
-		setQInt(a);
-	}
+		setQInt(DecToBin(a));
 	if (n == 16);
 }
 
@@ -84,7 +77,7 @@ string QInt::PrinQInt(int n)
 	}
 }
 
-string QInt::ChiaHai(string a)
+string ChiaHai(string a)
 {
 	string b;
 	int du = 0;
@@ -127,7 +120,7 @@ string QInt::DecToBin(string a)
 	return b;
 }
 
-string QInt::NhanHai(string a)
+string Nhan(string a,int n)
 {
 	int *b = new int[a.length() + 1];
 	string KQ;
@@ -135,10 +128,10 @@ string QInt::NhanHai(string a)
 		b[i] = 0;
 	for (int i = a.length() - 1; i >=0; i--)
 	{
-		b[i + 1] =b[i + 1] + (int(a[i] - 48) * 2);
+		b[i + 1] =b[i + 1] + (int(a[i] - 48) * n);
 		if (b[i + 1] >= 10 && i >= 0)
 		{
-			b[i] = 1;
+			b[i] = b[i + 1] / 10;
 			b[i + 1] = b[i + 1] % 10;
 		}
 		KQ.insert(0, 1, char(b[i + 1]) + 48);
@@ -150,17 +143,39 @@ string QInt::NhanHai(string a)
 	return KQ;
 }
 
-string QInt::HaiMu(int n)
+string IntSgString(int a)
+{
+	int i = 0, du;
+	string b;
+	while (a != 0)
+	{
+		du = a % 10;
+		b.insert(0, 1, char(du + 48));
+		a = a / 10;
+	}
+	return b;
+}
+
+int StrSgInt(string a)
+{
+	int b = 0;
+	for (int i = 0; i < a.length(); i++)
+		b = (b + int(a[i] - 48)) * 10;
+	b = b / 10;
+	return b;
+}
+
+string Mu(int k,int n)
 {
 	string a="1";
 	if (n == 0)
 		return a;
 	for (int i = 0; i < n; i++)
-		a = NhanHai(a);
+		a = Nhan(a, k);
 	return a;
 }
 
-string QInt::CongHaiString(string a, string b)
+string CongHaiString(string a, string b)
 {
 	if (a.length() < b.length())
 		a.swap(b);
@@ -178,6 +193,7 @@ string QInt::CongHaiString(string a, string b)
 			else
 				a[i - 1]++;
 		}
+
 	}
 	return a;
 }
@@ -194,7 +210,7 @@ string QInt::BinToDec(string a)
 	for (int i = 127; i >= 0; i--)
 	{
 		if (a[i] == '1')
-			KQ = CongHaiString(KQ, HaiMu(127 - i));
+			KQ = CongHaiString(KQ, Mu(2, 127 - i));
 	}
 	if (am == 1)
 		KQ.insert(0, 1, '-');
@@ -208,7 +224,7 @@ string QInt::BinToHex(string a)
 	for (int i = 127; i >=0; i--)
 	{
 		if (a[i] == '1')
-			b = CongHaiString(b, HaiMu(j));
+			b = CongHaiString(b, Mu(2, j));
 		j++;
 		if (j == 4)
 		{
@@ -255,7 +271,7 @@ string QInt::HexToBin(string a)
 	return KQ;
 }
 
-string QInt::CongBit(string BitA, string BitB)
+string CongBit(string BitA, string BitB)
 {
 	int tong;
 	string KQ;
@@ -390,5 +406,225 @@ QInt QInt::operator/(QInt a)
 	return a;
 }
 
+
+
+
+QFloat::QFloat()
+{
+	for (int i = 0; i < 4; i++)
+		qFloat[i] = 0;
+}
+
+void QFloat::setQFloat(string a)
+{
+	for (int i = 0; i < 4; i++)	//Ghi lai gia tri khoi tao
+		qFloat[i] = 0;
+	for (int i = 0; i < a.length(); i++)
+	{
+		for (int i = 0; i < 4; i++)
+		{
+			for (int j = i * 32; j < (i + 1) * 32; j++)
+			{
+				if (int(a[j] - 48) == 1)
+					qFloat[i] = (1 << ((i + 1) * 32 - 1 - j)) | qFloat[i];
+			}
+		}
+	}
+}
+
+string QFloat::getQFloat()
+{
+	string a;
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = i * 32; j < (i + 1) * 32; j++)
+			a.push_back(char(((qFloat[i] >> (((i + 1) * 32 - 1) - j)) & 1) + 48));
+	}
+	return a;
+}
+
+string QFloat::BitSauPhay(string a)
+{
+	string b;
+	int length;;
+	for (int i = 0; i < 16384; i++)//2^14=16384
+	{
+		length = a.length();
+		a = Nhan(a, 2);
+		if (a[0] == '1' && a.length() > length)
+		{
+			a.erase(a.begin());
+			b.push_back('1');
+		}
+		else
+			b.push_back('0');
+		while (a!="" && a[a.length() - 1] == '0')
+			a.erase(a.end() - 1);
+		if (a == "")
+			break;
+	}
+	return b;
+}	
+
+string QFloat::BitTruocPhay(string a)
+{
+	string b;
+	for (int i = 0; a != ""; i++)
+	{
+		b.insert(0, 1, (a[a.length() - 1] % 2 == 0) ? '0' : '1');
+		a = ChiaHai(a);
+	}
+	return b;
+}
+
+string QFloat::DecToBin(string a)
+{
+	string KQ;
+	string dau, cuoi, ex ;
+	int j = 0, mu = 0;
+	for (int i = 0; i < a.length(); i++)
+	{
+		if (a[i] == '.')
+		{
+			j = i;
+			break;
+		}
+	}
+	dau.assign(a, 0, j);
+	cuoi.assign(a, j + 1, a.length() - j);
+	dau = BitTruocPhay(dau);
+	cuoi = BitSauPhay(cuoi);
+	if (dau == "0" && cuoi == "0")
+	{
+		string O;
+		for (int i = 0; i < 128; i++)
+			O.push_back('0');
+		return O;
+	}
+	if (dau[0] == '-')
+	{
+		dau.erase(dau.begin());
+		KQ.push_back('1');
+	}
+	else
+		KQ.push_back('0');
+	if (dau[0] == '0')
+		for (int i = 0; dau[dau.length()-1] != '1'; i++)
+		{
+			dau.push_back(cuoi[0]);
+			cuoi.erase(cuoi.begin());
+			mu = mu - 1;
+		}
+	else
+		for (int i = 0; dau.length() >= 2; i++)
+		{
+			cuoi.insert(0, 1, dau[dau.length() - 1]);
+			dau.erase(dau.end() - 1);
+			mu = mu + 1;
+		}
+	mu = mu + 16383;
+	string strMu = IntSgString(mu);
+	ex = BitTruocPhay(strMu);
+	for (int i = ex.length(); i < 15; i++)
+		ex.insert(0, 1, '0');
+	KQ.append(ex);
+	KQ.append(cuoi);
+	for (int i = KQ.length() - 1; i < 128; i++)
+		KQ.push_back('0');
+	return KQ;
+}
+
+void QFloat::ScanQFloat(string a,int n)
+{
+	if (n == 2)
+		setQFloat(a);
+	if (n == 10)
+		setQFloat(DecToBin(a));
+}
+
+string QFloat::SoPhay(string a)
+{
+	string KQ = "0";
+	string mu;
+	for (int i = 0; i < a.length(); i++)
+	{
+		KQ.push_back('0');
+		if (a[i] == '1')
+		{
+			mu = Mu(5, i + 1);
+			KQ = CongHaiString(KQ,mu);
+		}
+
+	}
+	for (int i = KQ.length(); i < a.length(); i++)
+		KQ.insert(0, 1, '0');
+	while (KQ.length() > a.length())
+		KQ.erase(KQ.begin());
+	KQ.insert(0, 1, '.');
+	return KQ;
+}
+
+string QFloat::BinToDec(string a)
+{
+	QInt M;
+	string KQ, ex, dau ,cuoi;
+	int mu, test=0;
+	if(a[0] == '1') 
+		KQ.insert(0, 1, '-');
+	for (int i = 0; i < 128; i++)
+	{
+		if (a[i] == '1')
+			test = 1;
+	}
+	if (test == 0)
+		return "0.0";
+	for (int i = 1; i < 16; i++)
+		ex.push_back(a[i]);
+	for (int i = 0; i < 128 - 16 + 1; i++)
+		ex.insert(0, 1, '0');
+	mu = StrSgInt(M.BinToDec(ex));
+	mu = mu - 16383;
+	for (int i = 0; i < 16; i++)
+		a.erase(a.begin());
+	if (mu < 0)
+	{
+		mu = mu * (-1);
+		for (int i = 0; i < mu; i++)
+		{
+			if (i == 0)
+				a.insert(0, 1, '1');
+			else
+				a.insert(0, 1, '0');
+		}
+		a.insert(0, 1, '.');
+	}
+	else
+	{
+		a.insert(0, 1, '1');
+		a.insert(mu + 1, 1, '.');
+	}
+	while (a[a.length() - 1] == '0')
+		a.erase(a.end() - 1);
+	for (int i = a.length() - 1; a[i] != '.'; i--)
+		cuoi.insert(0, 1, a[i]);
+	cuoi = SoPhay(cuoi);
+	for (int i = 0; a[i] != '.'; i++)
+		dau.push_back(a[i]);
+	for (int i = dau.length(); i < 128; i++)
+		dau.insert(0, 1, '0');
+	QInt V;
+	dau = V.BinToDec(dau);
+	KQ.append(dau);
+	KQ.append(cuoi);
+	return KQ;
+}
+
+string QFloat::PrintQFloat(int n)
+{
+	if (n == 2)
+		return getQFloat();
+	if (n == 10)
+		return BinToDec(getQFloat());
+}
 
 
