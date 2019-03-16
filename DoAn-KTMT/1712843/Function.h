@@ -35,7 +35,9 @@ public:
 
 	QInt operator+(QInt a);
 	QInt operator-(QInt a);
+	int DemBit(string a);
 	QInt operator*(QInt a);
+	QInt operator/(QInt a);
 	
 	//Nhap Xuat
 	

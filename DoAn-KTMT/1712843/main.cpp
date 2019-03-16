@@ -35,12 +35,11 @@ void main()
 	string b = "6";
 	cout << I.CongHaiString(a, b) << endl;*/
 
-	string a = "70";
-	string b = "3";
+	string a = "129";
+	string b = "-3";
 	I.ScanQInt(a, 10);
 	E.ScanQInt(b, 10);
-	V = I * E;
+	V = I / E;
 	cout << V.PrinQInt(10) << endl;
-
 	system("pause");
 }

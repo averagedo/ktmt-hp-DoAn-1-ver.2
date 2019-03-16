@@ -292,15 +292,26 @@ QInt QInt::operator-(QInt a)
 	return a + *this;
 }
 
+int QInt::DemBit(string a)
+{
+	if (a[0] == '1')
+		a = BuHai(a);
+	for (int i = 0; i < 128; i++)
+	{
+		if (a[i] == '1')
+			return i;
+	}
+}
+
 QInt QInt::operator*(QInt a)
 {
 	string M = this->getQInt();
 	string Q = a.getQInt();
 	string Q0 = "0", A;
-	int n, j = 0;
-	while (M[j] != '1' && Q[j] != '1')
-		j++;
-	n = 128 - j + 1;	//So bit su dung
+	int n, j1, j2;
+	j1 = DemBit(M);
+	j2 = DemBit(Q);
+	n = (j1 < j2) ? 128 - j1 + 1 : 128 - j2 + 1;	//So bit su dung
 	for (int i = 0; i < 128; i++)
 		A.push_back('0');
 	for (int i = 0; i < n; i++)
@@ -322,8 +333,59 @@ QInt QInt::operator*(QInt a)
 			A[128 - n - 1] = '0';
 	}
 	string KQ;
-	KQ = KQ + Q;
+	for (int i = 0; i < 128; i++)
+		KQ.push_back('0');
+	KQ.replace(128 - n, n, Q, 128 - n, n);
 	KQ.replace(128 - 2 * n, n, A, 128 - n, n);
+	if (KQ[128 - 2 * n] == '1')
+		for (int i = 0; i < 128 - 2 * n; i++)
+			KQ[i] = '1';
+	a.setQInt(KQ);
+	return a;
+}
+
+QInt QInt::operator/(QInt a)
+{
+	string Q = this->getQInt();
+	string M = a.getQInt();
+	string A;
+	int n, j1, j2, am1 = 0, am2 = 0;
+	j1 = DemBit(M);
+	j2 = DemBit(Q);
+	n = (j1 < j2) ? 128 - j1 + 1 : 128 - j2 + 1;	//So bit su dung
+	if (Q[0] == '1')
+	{
+		Q = BuHai(Q);
+		am1 = 1;
+	}
+	if (M[0] == '1')
+	{
+		M = BuHai(M);
+		am2 = 1;
+	}
+	for (int i = 0; i < 128; i++)
+		A.push_back('0');
+	for (int i = 0; i < n; i++)
+	{
+		A.erase(A.begin() + 128 - n);
+		A.insert(127, 1, Q[128 - n]);
+		Q.erase(Q.end() - n);
+		Q.insert(127, 1, '0');
+		A = CongBit(A, BuHai(M));
+		if (A[128 - n] == '1')
+			A = CongBit(A , M);
+		else
+			Q[127] = '1';
+	}
+	string KQ;
+	for (int i = 0; i < 128; i++)
+		KQ.push_back('0');
+	KQ.replace(128 - n, n, Q, 128 - n, n);
+	if (KQ[128 - 2 * n] == '1')
+		for (int i = 0; i < 128 - 2 * n; i++)
+			KQ[i] = '1';
+	if ((am1 == 1 && am2 == 0) || (am1 == 0 && am2 == 1))
+		KQ = BuHai(KQ);
 	a.setQInt(KQ);
 	return a;
 }
