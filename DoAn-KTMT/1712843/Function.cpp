@@ -250,6 +250,8 @@ string QInt::HvsB(char a)
 string QInt::HexToBin(string a)
 {
 	string b, c, KQ;
+	while (a.length() < 32)
+		a.insert(0, 1, '0');
 	for (int i = 0; i < 32; i++)
 	{
 		b = HvsB(a[i]);
