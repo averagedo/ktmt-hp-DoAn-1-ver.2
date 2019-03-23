@@ -1,5 +1,6 @@
 #include<iostream>
 #include<string>
+#include<fstream>
 
 using namespace std;
 
@@ -56,6 +57,7 @@ string ChiaHai(string a);
 string Nhan(string a, int n);
 string IntSgString(int a);
 int StrSgInt(string a);
+string BToD(string a);
 
 class QFloat
 {
@@ -76,3 +78,5 @@ public:
 
 	string PrintQFloat(int n);
 };
+
+
